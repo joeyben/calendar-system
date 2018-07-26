@@ -49,19 +49,11 @@
                 </ul>
             </li>
             @endcan
-            @can('country_access')
-            <li class="{{ $request->segment(2) == 'countries' ? 'active' : '' }}">
-                <a href="{{ route('admin.countries.index') }}">
-                    <i class="fa fa-gears"></i>
-                    <span class="title">@lang('quickadmin.countries.title')</span>
-                </a>
-            </li>
-            @endcan
             
             @can('customer_access')
             <li class="{{ $request->segment(2) == 'customers' ? 'active' : '' }}">
                 <a href="{{ route('admin.customers.index') }}">
-                    <i class="fa fa-low-vision"></i>
+                    <i class="fa fa-address-book"></i>
                     <span class="title">@lang('quickadmin.customers.title')</span>
                 </a>
             </li>
@@ -84,20 +76,6 @@
                 </a>
             </li>
             @endcan
-            
-            @can('find_room_access')
-            <li class="{{ $request->segment(2) == 'find_rooms' ? 'active' : '' }}">
-                <a href="{{ route('admin.find_rooms.index') }}">
-                    <i class="fa fa-arrows"></i>
-                    <span class="title">@lang('quickadmin.find-room.title')</span>
-                </a>
-            </li>
-            @endcan
-            
-
-            
-
-            
 
 
 

@@ -32,7 +32,7 @@
                         @can('room_delete')
                             @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
                         @endcan
-
+                        <th>@lang('quickadmin.rooms.fields.name')</th>
                         <th>@lang('quickadmin.rooms.fields.room-number')</th>
                         <th>@lang('quickadmin.rooms.fields.floor')</th>
                         <th>@lang('quickadmin.rooms.fields.description')</th>
@@ -51,7 +51,7 @@
                                 @can('room_delete')
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
-
+                                <td field-key='name'>{{ $room->name }}</td>
                                 <td field-key='room_number'>{{ $room->room_number }}</td>
                                 <td field-key='floor'>{{ $room->floor }}</td>
                                 <td field-key='description'>{!! $room->description !!}</td>
@@ -108,7 +108,7 @@
     </div>
 @stop
 
-@section('javascript') 
+@section('javascript')
     <script>
         @can('room_delete')
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.rooms.mass_destroy') }}'; @endif

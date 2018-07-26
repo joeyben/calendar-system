@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCustomersRequest;
 use App\Http\Requests\Admin\UpdateCustomersRequest;
-
+use App\Events\Customers\CustomerCreated;
+use App\Events\Customers\CustomerDeleted;
+use App\Events\Customers\CustomerUpdated;
 class CustomersController extends Controller
 {
     /**
@@ -64,7 +66,7 @@ class CustomersController extends Controller
         }
         $customer = Customer::create($request->all());
 
-
+        event(new CustomerCreated($customer));
 
         return redirect()->route('admin.customers.index');
     }
@@ -104,6 +106,7 @@ class CustomersController extends Controller
         $customer = Customer::findOrFail($id);
         $customer->update($request->all());
 
+        event(new CustomerUpdated($customer));
 
 
         return redirect()->route('admin.customers.index');
@@ -143,6 +146,7 @@ class CustomersController extends Controller
         }
         $customer = Customer::findOrFail($id);
         $customer->delete();
+        event(new CustomerDeleted($customer));
 
         return redirect()->route('admin.customers.index');
     }

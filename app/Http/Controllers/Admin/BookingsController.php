@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBookingsRequest;
 use App\Http\Requests\Admin\UpdateBookingsRequest;
+use App\Events\Bookings\BookingCreated;
+use App\Events\Bookings\BookingDeleted;
+use App\Events\Bookings\BookingUpdated;
 
 class BookingsController extends Controller
 {
@@ -66,6 +69,7 @@ class BookingsController extends Controller
             return abort(401);
         }
         $booking = Booking::create($request->all());
+        event(new BookingCreated($booking));
 
         return redirect()->route('admin.bookings.index');
     }
@@ -105,6 +109,7 @@ class BookingsController extends Controller
         }
         $booking = Booking::findOrFail($id);
         $booking->update($request->all());
+        event(new BookingUpdated($booking));
 
 
         return redirect()->route('admin.bookings.index');
@@ -141,6 +146,7 @@ class BookingsController extends Controller
         }
         $booking = Booking::findOrFail($id);
         $booking->delete();
+        event(new BookingDeleted($booking));
 
         return redirect()->route('admin.bookings.index');
     }

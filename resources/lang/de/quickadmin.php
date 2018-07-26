@@ -1,20 +1,101 @@
 <?php
 
 return [
-		'user-management' => [		'title' => 'User management',		'fields' => [		],	],
-		'roles' => [		'title' => 'Roles',		'fields' => [			'title' => 'Title',		],	],
-		'users' => [		'title' => 'Users',		'fields' => [			'name' => 'Name',			'email' => 'Email',			'password' => 'Password',			'role' => 'Role',			'remember-token' => 'Remember token',		],	],
-		'countries' => [		'title' => 'Countries',		'fields' => [			'shortcode' => 'Shortcode',			'title' => 'Title',			'name' => 'Name',		],	],
-		'customers' => [		'title' => 'Customers',		'fields' => [			'first-name' => 'First name',			'last-name' => 'Last name',			'address' => 'Address',			'phone' => 'Phone',			'email' => 'Email',			'country' => 'Country',		],	],
-		'rooms' => [		'title' => 'Rooms',		'fields' => [			'room-number' => 'Room number',			'floor' => 'Floor',			'description' => 'Description',		],	],
-		'bookings' => [		'title' => 'Bookings',		'fields' => [			'customer' => 'Customer',			'room' => 'Room',			'time-from' => 'Time from',			'time-to' => 'Time to',			'additional-information' => 'Additional information',		],	],
-		'find-room' => [		'title' => 'Find room',		'fields' => [		],	],
+	
+	'user-management' => [
+		'title' => 'User management',
+		'fields' => [
+		],
+	],
+	
+	'roles' => [
+		'title' => 'Roles',
+		'fields' => [
+			'title' => 'Title',
+		],
+	],
+	
+	'users' => [
+		'title' => 'Users',
+		'fields' => [
+			'name' => 'Name',
+			'email' => 'Email',
+			'password' => 'Passwort',
+			'role' => 'Role',
+			'remember-token' => 'Remember token',
+		],
+	],
+	
+	'countries' => [
+		'title' => 'Countries',
+		'fields' => [
+			'shortcode' => 'Shortcode',
+			'title' => 'Title',
+			'name' => 'Name',
+		],
+	],
+	
+	'customers' => [
+		'title' => 'Kunden',
+		'fields' => [
+			'first-name' => 'Vorname',
+			'last-name' => 'Nachname',
+			'address' => 'Adresse',
+			'phone' => 'Tel',
+			'email' => 'E-Mail',
+			'country' => 'Land',
+		],
+	],
+	
+	'rooms' => [
+		'title' => 'Objekte',
+		'fields' => [
+            'name' => 'Objektname',
+            'room-number' => 'Objektnummer',
+			'floor' => 'Max Personen',
+			'description' => 'Beschreibung',
+		],
+	],
+	
+	'bookings' => [
+		'title' => 'Buchungen',
+		'fields' => [
+			'customer' => 'Kunde',
+			'room' => 'Objekt',
+			'time-from' => 'Time from',
+			'time-to' => 'Time to',
+			'additional-information' => 'Additional information',
+		],
+	],
+
+    'history' => [
+        'title' => 'History',
+        'fields' => [
+            'icon' => '-',
+            'user' => 'Benutzer',
+            'type' => 'Type',
+            'type_' => [
+                'Booking' => 'Buchung',
+                'Customer' => 'Kunde',
+                'Room' => 'Objekt',
+            ],
+            'time' => 'Wann',
+            'day' => 'Datum',
+            'text' => 'Text',
+        ],
+    ],
+
+	'find-room' => [
+		'title' => 'Find Objekt',
+		'fields' => [
+		],
+	],
 	'qa_create' => 'Erstellen',
 	'qa_save' => 'Speichern',
 	'qa_edit' => 'Bearbeiten',
-	'qa_view' => 'Betrachten',
+	'qa_view' => 'Anschauen',
 	'qa_update' => 'Aktualisieren',
-	'qa_list' => 'Liste',
+	'qa_list' => 'Report',
 	'qa_no_entries_in_table' => 'Keine Einträge in der Tabelle.',
 	'qa_custom_controller_index' => 'Custom controller index.',
 	'qa_logout' => 'Abmelden',
@@ -244,5 +325,5 @@ return [
 	'qa_parse_csv' => 'Lese CSV',
 	'qa_import_data' => 'Daten importieren',
 	'qa_imported_rows_to_table' => ':rows Zeilen in Tabelle :table importiert',
-	'quickadmin_title' => 'hotel-booking',
+	'quickadmin_title' => 'Kalender',
 ];

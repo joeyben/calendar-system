@@ -106,8 +106,18 @@ class Booking extends Model
         return $this->belongsTo(Customer::class, 'customer_id')->withTrashed();
     }
 
+    public function getCustomer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id')->get();
+    }
+
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id')->withTrashed();
+    }
+
+    public function getRoom()
+    {
+        return $this->belongsTo(Room::class, 'room_id')->get();
     }
 }

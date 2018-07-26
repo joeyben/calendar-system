@@ -3,6 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\User;
+use App\Events\Access\User\UserCreated;
+use App\Events\Access\User\UserDeactivated;
+use App\Events\Access\User\UserDeleted;
+use App\Events\Access\User\UserPasswordChanged;
+use App\Events\Access\User\UserPermanentlyDeleted;
+use App\Events\Access\User\UserReactivated;
+use App\Events\Access\User\UserRestored;
+use App\Events\Access\User\UserUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -57,7 +65,7 @@ class UsersController extends Controller
         }
         $user = User::create($request->all());
 
-
+        event(new UserCreated($user));
 
         return redirect()->route('admin.users.index');
     }
@@ -97,7 +105,7 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $user->update($request->all());
 
-
+        event(new UserUpdated($user));
 
         return redirect()->route('admin.users.index');
     }
@@ -111,6 +119,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
+        var_dump(\Route::current()->getName());
         if (! Gate::allows('user_view')) {
             return abort(401);
         }
@@ -133,6 +142,7 @@ class UsersController extends Controller
         }
         $user = User::findOrFail($id);
         $user->delete();
+        event(new UserDeleted($user));
 
         return redirect()->route('admin.users.index');
     }

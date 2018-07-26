@@ -50,6 +50,7 @@ return [
 	'rooms' => [
 		'title' => 'Rooms',
 		'fields' => [
+		    'name' => 'Name',
 			'room-number' => 'Room number',
 			'floor' => 'Floor',
 			'description' => 'Description',

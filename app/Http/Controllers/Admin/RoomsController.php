@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Room;
+use App\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRoomsRequest;
 use App\Http\Requests\Admin\UpdateRoomsRequest;
+use App\Events\Rooms\RoomCreated;
+use App\Events\Rooms\RoomDeleted;
+use App\Events\Rooms\RoomUpdated;
 
 class RoomsController extends Controller
 {
@@ -61,7 +65,7 @@ class RoomsController extends Controller
         }
         $room = Room::create($request->all());
 
-
+        event(new RoomCreated($room));
 
         return redirect()->route('admin.rooms.index');
     }
@@ -98,7 +102,7 @@ class RoomsController extends Controller
         $room = Room::findOrFail($id);
         $room->update($request->all());
 
-
+        event(new RoomUpdated($room));
 
         return redirect()->route('admin.rooms.index');
     }
@@ -117,9 +121,27 @@ class RoomsController extends Controller
         }
         $bookings = \App\Booking::where('room_id', $id)->get();
 
+        $booking_arr = [];
+        foreach ($bookings as $book){
+            $start = new \DateTime($book['time_from']);
+            $end = new \DateTime($book['time_to']);
+            array_push($booking_arr, array(
+                'id' => $book['id'],
+                'customer' => $book->getCustomer()[0]->first_name." ".$book->getCustomer()[0]->last_name,
+                'additional_information'=> $book['additional_information'],
+                'startDateY'=> $start->format('Y'),
+                'startDateM'=> $start->format('m')-1,
+                'startDateD'=> $start->format('d'),
+                'endDateY'=> $end->format('Y'),
+                'endDateM'=> $end->format('m')-1,
+                'endDateD'=> $end->format('d'),
+            ));
+        }
         $room = Room::findOrFail($id);
 
-        return view('admin.rooms.show', compact('room', 'bookings'));
+        $customers = Customer::get()->pluck('full_name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+        return view('admin.rooms.show', compact('room', 'bookings','booking_arr', 'customers'));
     }
 
 
@@ -136,7 +158,7 @@ class RoomsController extends Controller
         }
         $room = Room::findOrFail($id);
         $room->delete();
-
+        event(new RoomDeleted($room));
         return redirect()->route('admin.rooms.index');
     }
 

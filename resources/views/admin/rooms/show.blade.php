@@ -27,10 +27,11 @@
                     </table>
                 </div>
             </div><!-- Nav tabs -->
+
             <ul class="nav nav-tabs" role="tablist">
 
                 <li role="presentation" class="active"><a href="#bookings" aria-controls="bookings" role="tab"
-                                                          data-toggle="tab">Bookings</a></li>
+                                                          data-toggle="tab">Buchungen</a></li>
             </ul>
 
             <!-- Tab panes -->
@@ -116,9 +117,134 @@
                 </div>
             </div>
 
-            <p>&nbsp;</p>
+            <div class="calendar"></div>
 
             <a href="{{ route('admin.rooms.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a>
         </div>
     </div>
+    <div class="modal modal-fade" id="event-modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">
+                        Buchung
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="event-index" value="">
+                        {!! Form::open(['method' => 'POST','class'=>'form-horizontal', 'route' => ['admin.bookings.store']]) !!}
+                        <div class="form-group">
+                            {!! Form::label('customer_id', trans('quickadmin.bookings.fields.customer').'*', ['class' => 'col-sm-4 control-label']) !!}
+                            <div class="col-sm-7">
+                                {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'style' => 'width:100%', 'required' => true]) !!}
+                            </div>
+                            <p class="help-block"></p>
+                            @if($errors->has('customer_id'))
+                                <p class="help-block">
+                                    {{ $errors->first('customer_id') }}
+                                </p>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
+                            {!! Form::label('additional_information', trans('quickadmin.bookings.fields.additional-information'), ['class' => 'col-sm-4 control-label']) !!}
+
+                            <div class="col-sm-7">
+                                {!! Form::textarea('additional_information', old('additional_information'), ['class' => 'form-control ', 'placeholder' => '', 'required' => '']) !!}
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="time_from" class="col-sm-4 control-label">Datum</label>
+                            <div class="col-sm-7">
+                                <div class="input-group input-daterange">
+                                    <input name="time_from" type="text" class="form-control datetimepicker" value="2019-04-05">
+                                    <span class="input-group-addon">bis</span>
+                                    <input name="time_to" type="text" class="form-control datetimepicker" value="2019-04-19">
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input name="room_id" type="hidden" class="form-control" value="{{ $room->id }}">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-primary' ]) !!}
+
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+@section('javascript')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+        $('.datetimepicker').datetimepicker({
+            format: "YYYY-MM-DD HH:mm"
+        });
+    </script>
+    <script type="application/javascript" src="{{ url('js') }}/app.js"></script>
+
+    <script type="application/javascript">
+        function editEvent(event) {
+            $('#event-modal input[name="event-index"]').val(event ? event.customer : '');
+            $('#event-modal input[name="event-name"]').val(event ? event.name : '');
+            $('#event-modal input[name="event-location"]').val(event ? event.location : '');
+            $('#event-modal input[name="time_from"]').datetimepicker('date', event ? event.startDate : '');
+            $('#event-modal input[name="time_to"]').datetimepicker('date', event ? event.endDate : '');
+            $('#event-modal').modal();
+        }
+        $('.calendar').calendar({
+            alwaysHalfDay: true,
+            style:'background',
+            enableContextMenu: true,
+            enableRangeSelection: true,
+            selectRange: function(e) {
+                editEvent({ startDate: e.startDate, endDate: e.endDate });
+            },
+            dataSource: [
+                @if (count($booking_arr) > 0)
+                        @foreach ($booking_arr as $booking)
+                    {
+                    customer: '{{ $booking['customer'] }}',
+                    name: '{{ $booking['additional_information'] }}',
+                    startDate: new Date({{ $booking['startDateY'] }}, {{ $booking['startDateM'] }}, {{ $booking['startDateD'] }}),
+                    endDate: new Date({{ $booking['endDateY'] }}, {{ $booking['endDateM'] }}, {{ $booking['endDateD'] }})
+                    },
+        @endforeach
+        @endif
+            ],
+            mouseOnDay: function(e) {
+                if(e.events.length > 0) {
+                    var content = '';
+
+                    for(var i in e.events) {
+                        content += '<div class="event-tooltip-content">'
+                            + '<div class="event-name" style="color:' + e.events[i].color + '">' + e.events[i].customer + '</div>'
+                            + '<div class="event-location">' + e.events[i].name + '</div>'
+                            + '</div>';
+                    }
+
+                    $(e.element).popover({
+                        trigger: 'manual',
+                        container: 'body',
+                        html:true,
+                        content: content
+                    });
+
+                    $(e.element).popover('show');
+                }
+            },
+            mouseOutDay: function(e) {
+                if(e.events.length > 0) {
+                    $(e.element).popover('hide');
+                }
+            },
+        });
+
+    </script>
+@endsection
 @stop
